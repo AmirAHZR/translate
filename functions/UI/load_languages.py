@@ -6,9 +6,7 @@ def load_languages(list_of_langueges = list):
     for ind, obj in enumerate(list_of_langueges):
         print(f"{ind +1}.{obj}")
     destination = int(input())
+    obj = list_of_langueges[destination-1]
     list_of_langueges.insert(origin_num-1,origin)
-    return origin, destination
-
-        
-
-
+    des_org = list_of_langueges.index(obj)
+    return origin_num-1, destination
