@@ -8,4 +8,4 @@ def user_mode():
     word = input()
 
     result = translate(filtering(word), langs[list_lang[origin]], langs[list_lang[des]])
-    return result, origin, word, langs
+    return result, origin, word
