@@ -10,10 +10,4 @@ for i in list_lang:
         loaded_list = pickle.load(f)
         langs[i] = loaded_list
 
-for i in list_lang:
-    counter = 0
-    for word in range(len(langs[i])):
-        langs[i][counter] = list()
-
-
 
