@@ -1,6 +1,7 @@
 from modes.developer.add_word.add_word import develop_add_word
 from modes.user.search import *
-
+from pyrobale import Client, Message
+client = Client("YOUR BOT TOKEN")
 print(langs)
 while True:
         select = input("please select your mode:\n1.Translate\n2.Developer mode\n3.Developers\n4.Exit\n")
