@@ -1,4 +1,4 @@
-import pickle
+from pickle import load
 
 langs = {
     "Farsi" : [],
@@ -7,7 +7,7 @@ langs = {
 list_lang = list(langs.keys())
 for i in list_lang:
     with open(f'document\words_pkl\{i}.pkl', 'rb') as f:   # rb = read binary
-        loaded_list = pickle.load(f)
+        loaded_list = load(f)
         langs[i] = loaded_list
 
 
