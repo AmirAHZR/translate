@@ -1,6 +1,6 @@
 from functions.add.add_word import add_word
 from document.words_pkl.saver import saver
-from document.languages_words import langs, list_lang
+from document.languages_words import  list_lang
 
 def develop_add_word(origin,word, langs):
 
