@@ -1,0 +1,2 @@
+#files with .pyc formats change every time that you appeng new word
+*.pyc
