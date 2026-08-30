@@ -1,50 +1,62 @@
 from modes.developer.add_word.add_word import develop_add_word
+from document.languages_words import list_lang
 from modes.user.search import *
-from functions.UI.load_languages import load_languages
-import tkinter as tk
-from tkinter import filedialog
+from batch import batch_translate
+from document.languages_words import langs, list_lang
+from functions.filtering.word_filtering import filtering
+from balethon import Client
+from balethon.objects import Message, ReplyKeyboard
+from balethon.conditions import private, equals, at_state
+import config
+from bot import keyboards, text
 
-def batch_translate(filepath):
-    """
-    Reads every line of a text file and tries to translate it.
-    Results are saved to  <original_filename>_translated.txt
-    """
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            words = [line.strip() for line in f if line.strip()]
-    except FileNotFoundError:
-        print(f"File '{filepath}' not found.")
-        return
+bot = Client(config.TOKEN)
 
-    if not words:
-        print("The file is empty.")
-        return
+origin = ""
+des = ""
+word = ""
 
-    output_path = filepath.rsplit(".", 1)[0] + "_translated.txt"
-    found = 0
-    not_found = []
-    la = load_languages(list_lang)
-    with open(output_path, "w", encoding="utf-8") as out:
-        for word in words:
-            
-            result = translate(word.strip(), langs[la[0]], langs[la[1]])  
-            
-            if result and result[0]:
-                out.write(f"{word}  -->  {result}\n")
-                found += 1
-            else:
-                out.write(f"{word}  -->  [NOT FOUND]\n")
-                not_found.append(word)
+@bot.on_command(private,)
+async def start(*, message:Message):
 
-    print(f"\nDone! {found}/{len(words)} words translated.")
-    print(f"Output saved to: {output_path}")
+    await message.reply(
+        text.start(message),
+        keyboards.set_mode
+    )
 
+@bot.on_message(private & equals("Translate🔄️"))
+async def none_state(message: Message):
+    await message.reply(text.origin_lang, ReplyKeyboard(list_lang))
+    message.author.set_state("set_origin")
+
+
+@bot.on_message(at_state("set_origin"))
+async def none_state(message: Message):
+    global origin, list_lang
+    origin = message.text
+    list_lang.remove(message.text)
+    await message.reply(text.des_lang, ReplyKeyboard(list_lang))
+    list_lang = langs
     
 
+    message.author.set_state("set_des")
 
+@bot.on_message(at_state("set_des"))
+async def none_state(message: Message):
+    global des
+    des = message.text
+    await message.reply(text.word,None)
+    message.author.set_state("set_word")
 
-while True:
+@bot.on_message(at_state("set_word"))
+async def none_state(message: Message):
+    global word
+    word = message.text
+    await message.reply(translate(filtering(word), langs[origin], langs[des]),keyboards.set_mode)
+    await bot.send_message(message.author.id, text.con)
 
+bot.run()
+'''
     select = input(
         "please select your mode:\n"
         "1.Translate\n"
@@ -122,3 +134,4 @@ while True:
     elif select == "5":
         
         break
+'''
