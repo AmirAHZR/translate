@@ -1,6 +1,8 @@
 from modes.developer.add_word.add_word import develop_add_word
 from modes.user.search import *
 from functions.UI.load_languages import load_languages
+import tkinter as tk
+from tkinter import filedialog
 
 def batch_translate(filepath):
     """
@@ -86,17 +88,36 @@ while True:
                 print("Thank for helping us!")
             else:
                 print("Thank! but we have that word in our dict")
+            breaks = input("Do you want to continue? Y/N\n")
+            if breaks != "Y" or "y":
+                break
 
     elif select == "3":
         print("Developers:\nAmir AHZ\nGithub: github.com/Amir-AHZR")
 
     elif select == "4":
       
-        filepath = input("Enter the path to your text file (one word per line):\n").strip()
+
+
+        root = tk.Tk()
+        root.withdraw()
+
+        file_path = filedialog.askopenfilename(
+            title="select txt format file",
+            filetypes=[("text file", "*.txt")], 
+            defaultextension=".txt"
+        )
+
+        if file_path:
+
+            if file_path.lower().endswith('.txt'):
+                print(f"File selected correctly:{file_path}")
+         
+           
 
         
      
-        batch_translate(filepath)
+        batch_translate(file_path)
 
     elif select == "5":
         
