@@ -1,18 +1,62 @@
 from modes.developer.add_word.add_word import develop_add_word
+from document.languages_words import list_lang
 from modes.user.search import *
 from batch import batch_translate
-import tkinter as tk
-from tkinter import filedialog
+from document.languages_words import langs, list_lang
+from functions.filtering.word_filtering import filtering
 from balethon import Client
-from balethon.objects import Message
-from balethon.conditions import private, equals
+from balethon.objects import Message, ReplyKeyboard
+from balethon.conditions import private, equals, at_state
 import config
+from bot import keyboards, text
 
 bot = Client(config.TOKEN)
 
+origin = ""
+des = ""
+word = ""
 
-while True:
+@bot.on_command(private,)
+async def start(*, message:Message):
 
+    await message.reply(
+        text.start(message),
+        keyboards.set_mode
+    )
+
+@bot.on_message(private & equals("Translate🔄️"))
+async def none_state(message: Message):
+    await message.reply(text.origin_lang, ReplyKeyboard(list_lang))
+    message.author.set_state("set_origin")
+
+
+@bot.on_message(at_state("set_origin"))
+async def none_state(message: Message):
+    global origin, list_lang
+    origin = message.text
+    list_lang.remove(message.text)
+    await message.reply(text.des_lang, ReplyKeyboard(list_lang))
+    list_lang = langs
+    
+
+    message.author.set_state("set_des")
+
+@bot.on_message(at_state("set_des"))
+async def none_state(message: Message):
+    global des
+    des = message.text
+    await message.reply(text.word,None)
+    message.author.set_state("set_word")
+
+@bot.on_message(at_state("set_word"))
+async def none_state(message: Message):
+    global word
+    word = message.text
+    await message.reply(translate(filtering(word), langs[origin], langs[des]),keyboards.set_mode)
+    await bot.send_message(message.author.id, text.con)
+
+bot.run()
+'''
     select = input(
         "please select your mode:\n"
         "1.Translate\n"
@@ -90,3 +134,4 @@ while True:
     elif select == "5":
         
         break
+'''
